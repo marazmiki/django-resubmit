@@ -3,10 +3,9 @@ from __future__ import absolute_import
 
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse, HttpResponseNotFound
-from django.utils import simplejson
 from django.views.generic.base import View
-
 from .core import get_temporary_storage, get_thumbnail, ThumbnailException
+import json
 
 
 class Preview(View):
@@ -49,5 +48,5 @@ class Resubmit(View):
 
         return HttpResponse(status=201,
                 content_type='text/plain; charset=utf-8',
-                content = simplejson.dumps(data))
+                content = json.dumps(data))
 
