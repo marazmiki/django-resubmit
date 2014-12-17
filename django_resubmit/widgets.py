@@ -6,8 +6,8 @@ from django.conf import settings
 from django.forms.widgets import CheckboxInput, ClearableFileInput, HiddenInput, Input
 from django.forms.widgets import FILE_INPUT_CONTRADICTION
 from django.utils.encoding import force_unicode
-
 from .core import get_temporary_storage, get_thumbnail
+import json
 
 
 FILE_INPUT_CLEAR = False
@@ -29,6 +29,11 @@ class FileWidget(ClearableFileInput):
         super(FileWidget, self).__init__(*args, **kwargs)
 
     def value_from_datadict(self, data, files, name):
+        try:
+            data = json.loads(data)
+        except(ValueError, TypeError):
+            pass
+
         self.resubmit_key = data.get(self._resubmit_keyname(name), '')
 
         upload = super(FileWidget, self).value_from_datadict(data, files, name)
@@ -61,7 +66,7 @@ class FileWidget(ClearableFileInput):
         attrs.update(default_attrs)
         checkbox_name = self.clear_checkbox_name(name)
         checkbox_id = self.clear_checkbox_id(checkbox_name)
-        
+
         thumbnail = self._thumbnail(value)
         if thumbnail:
             width, height = thumbnail.size
